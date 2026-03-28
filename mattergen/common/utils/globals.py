@@ -6,6 +6,7 @@
 2. It registers a new resolver for OmegaConf, `eval`, which allows us to use `eval` in our config files.
 """
 import os
+import sys
 from functools import lru_cache
 from pathlib import Path
 
@@ -38,7 +39,14 @@ print(f"MODELS_PROJECT_ROOT: {MODELS_PROJECT_ROOT}")
 # Set environment variable PROJECT_ROOT so that hydra / OmegaConf can access it.
 os.environ["PROJECT_ROOT"] = str(MODELS_PROJECT_ROOT)  # for hydra
 
-DEFAULT_SAMPLING_CONFIG_PATH = Path(__file__).resolve().parents[3] / "sampling_conf"
+_DEFAULT_SITE_PACKAGES_SAMPLING_CONF = Path(__file__).resolve().parents[3] / "sampling_conf"
+_DEFAULT_ENV_ROOT_SAMPLING_CONF = Path(sys.prefix) / "sampling_conf"
+if _DEFAULT_SITE_PACKAGES_SAMPLING_CONF.exists():
+    DEFAULT_SAMPLING_CONFIG_PATH = _DEFAULT_SITE_PACKAGES_SAMPLING_CONF
+elif _DEFAULT_ENV_ROOT_SAMPLING_CONF.exists():
+    DEFAULT_SAMPLING_CONFIG_PATH = _DEFAULT_ENV_ROOT_SAMPLING_CONF
+else:
+    DEFAULT_SAMPLING_CONFIG_PATH = _DEFAULT_SITE_PACKAGES_SAMPLING_CONF
 PROPERTY_SOURCE_IDS = [
     "dft_mag_density",
     "dft_bulk_modulus",
