@@ -24,7 +24,7 @@ known_first_party = [
 
 [project]
 name = "mattergen-module-unofficial-akashkesav"
-version = "1.0.3"
+version = "1.0.4"
 requires-python = ">= 3.10"
 description = "MatterGen is a generative model for inorganic materials design across the periodic table that can be fine-tuned to steer the generation towards a wide range of property constraints."
 readme = "README.md"
@@ -95,6 +95,9 @@ include = ["mattergen*"]
 
 [tool.setuptools.package-data]
 "*" = ["**.yaml", "**.csv", "**.pt", "**.json"]
+
+[tool.setuptools.data-files]
+"sampling_conf" = ["sampling_conf/*.yaml"]
 
 [tool.uv.sources]
 torch = { index = "pytorch_linux",  marker = "sys_platform == 'linux'" }
