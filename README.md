@@ -94,6 +94,7 @@ The checkpoints are located at `checkpoints/<model_name>` and are also available
 ```bash
 git lfs pull -I checkpoints/<model_name> --exclude="" 
 ```
+When downloading checkpoints from Hugging Face, the module enables progress bars so download status is visible (for uncached files).
 
 > [!NOTE]
 > The checkpoints provided were re-trained using this repository, i.e., are not identical to the ones used in the paper. Hence, results may slightly deviate from those in the publication. 

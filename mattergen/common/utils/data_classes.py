@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import Any, Literal, Protocol
 
 import numpy as np
-from huggingface_hub import hf_hub_download
+from huggingface_hub import snapshot_download
+from huggingface_hub.utils import enable_progress_bars
 from hydra import compose, initialize_config_dir
 from omegaconf import DictConfig
 
@@ -65,12 +66,18 @@ class MatterGenCheckpointInfo:
         Instantiate a MatterGenCheckpointInfo object from a model hosted on the Hugging Face Hub.
 
         """
-        hf_hub_download(
-            repo_id=repository_name, filename=f"checkpoints/{model_name}/checkpoints/last.ckpt"
+        # Ensure users see download progress whenever artifacts are fetched.
+        enable_progress_bars()
+        snapshot_dir = Path(
+            snapshot_download(
+                repo_id=repository_name,
+                allow_patterns=[
+                    f"checkpoints/{model_name}/checkpoints/last.ckpt",
+                    f"checkpoints/{model_name}/config.yaml",
+                ],
+            )
         )
-        config_path = hf_hub_download(
-            repo_id=repository_name, filename=f"checkpoints/{model_name}/config.yaml"
-        )
+        config_path = snapshot_dir / "checkpoints" / model_name / "config.yaml"
         return cls(
             model_path=Path(config_path).parent,
             config_overrides=config_overrides or [],
