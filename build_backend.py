@@ -38,10 +38,9 @@ def _maybe_pull_lfs_models() -> None:
     git_dir = repo_root / ".git"
 
     if not checkpoints_dir.exists() or not git_dir.exists():
-        _maybe_raise(
-            require_models,
-            "[mattergen-build] source checkout not detected; skipping Git LFS pull.",
-        )
+        # In isolated PEP 517 builds, source trees often exclude `.git` and model assets.
+        # Skip pulling in that case and enforce strictness only in real checkouts.
+        print("[mattergen-build] source checkout not detected; skipping Git LFS pull.")
         return
 
     try:
