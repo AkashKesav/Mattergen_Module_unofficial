@@ -37,14 +37,13 @@ def _maybe_pull_lfs_models() -> None:
     git_dir = repo_root / ".git"
 
     if not checkpoints_dir.exists():
-        _maybe_raise(
-            require_models,
-            "[mattergen] checkpoints directory not found; skipping Git LFS pull.",
-        )
+        # In isolated wheel/sdist builds, checkpoints are usually not present.
+        print("[mattergen] checkpoints directory not found; skipping Git LFS pull.")
         return
 
     if not git_dir.exists():
-        _maybe_raise(require_models, "[mattergen] .git directory not found; skipping Git LFS pull.")
+        # In isolated wheel/sdist builds, `.git` metadata is often missing.
+        print("[mattergen] .git directory not found; skipping Git LFS pull.")
         return
 
     try:
