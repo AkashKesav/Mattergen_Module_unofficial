@@ -22,7 +22,7 @@ def _maybe_raise(require_models: bool, message: str) -> None:
 
 
 def _maybe_pull_lfs_models() -> None:
-    require_models = _as_bool(os.getenv("MATTERGEN_REQUIRE_LFS_MODELS"), default=True)
+    require_models = _as_bool(os.getenv("MATTERGEN_REQUIRE_LFS_MODELS"), default=False)
 
     if not _as_bool(os.getenv("MATTERGEN_PULL_LFS_MODELS"), default=True):
         print("[mattergen] MATTERGEN_PULL_LFS_MODELS disabled; skipping Git LFS pull.")

@@ -19,17 +19,6 @@ PRETRAINED_MODEL_NAME = Literal[
 ]
 
 
-def _resolve_local_checkpoint_dir(model_name: PRETRAINED_MODEL_NAME) -> Path:
-    root = Path(__file__).resolve().parent.parent
-    checkpoint_dir = root / "checkpoints" / model_name
-    if not checkpoint_dir.exists():
-        raise FileNotFoundError(
-            f"Local checkpoint directory not found: {checkpoint_dir}. "
-            "Pull it first via: git lfs pull -I checkpoints/ --exclude=\"\""
-        )
-    return checkpoint_dir
-
-
 def generate_materials(
     output_path: str | Path,
     pretrained_name: PRETRAINED_MODEL_NAME = "mattergen_base",
@@ -38,7 +27,6 @@ def generate_materials(
     properties_to_condition_on: dict[str, Any] | None = None,
     record_trajectories: bool = False,
     diffusion_guidance_factor: float = 0.0,
-    use_local_checkpoints: bool = False,
 ) -> list[Any]:
     """Generate crystal structures from a pretrained MatterGen checkpoint.
 
@@ -50,7 +38,6 @@ def generate_materials(
         properties_to_condition_on: Optional property values for conditional generation.
         record_trajectories: If True, also writes denoising trajectories.
         diffusion_guidance_factor: Classifier-free guidance factor.
-        use_local_checkpoints: If True, load checkpoints from local `checkpoints/`.
 
     Returns:
         A list of generated pymatgen Structure objects.
@@ -62,18 +49,10 @@ def generate_materials(
     from mattergen.common.utils.data_classes import MatterGenCheckpointInfo
     from mattergen.generator import CrystalGenerator
 
-    if use_local_checkpoints:
-        checkpoint_info = MatterGenCheckpointInfo(
-            model_path=_resolve_local_checkpoint_dir(pretrained_name),
-            load_epoch="last",
-            config_overrides=[],
-            strict_checkpoint_loading=True,
-        )
-    else:
-        checkpoint_info = MatterGenCheckpointInfo.from_hf_hub(
-            pretrained_name,
-            config_overrides=[],
-        )
+    checkpoint_info = MatterGenCheckpointInfo.from_hf_hub(
+        pretrained_name,
+        config_overrides=[],
+    )
 
     generator = CrystalGenerator(
         checkpoint_info=checkpoint_info,
@@ -129,5 +108,4 @@ def generation_defaults() -> dict[str, Any]:
         "num_batches": 1,
         "record_trajectories": False,
         "diffusion_guidance_factor": 0.0,
-        "use_local_checkpoints": False,
     }

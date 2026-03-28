@@ -43,7 +43,8 @@ uv pip install -e .
 When installing from a source checkout (e.g., `uv pip install -e .`), MatterGen attempts
 to pull model checkpoints from Git LFS during build/install (`git lfs pull -I checkpoints/ --exclude=""`).
 When installing prebuilt wheels from package indexes, this step is skipped.
-By default, source installs are strict and fail if Git LFS model pull cannot complete.
+By default, source installs are non-strict: if Git LFS model pull cannot complete,
+installation continues and models can still be loaded from Hugging Face at runtime.
 This strict check is applied when installing from a real git checkout that contains
 the model assets and `.git` metadata.
 You can control this behavior with environment variables:
@@ -51,8 +52,8 @@ You can control this behavior with environment variables:
 # disable automatic model pull during install
 export MATTERGEN_PULL_LFS_MODELS=0
 
-# opt out of strict mode (default is strict)
-export MATTERGEN_REQUIRE_LFS_MODELS=0
+# opt in to strict mode (default is non-strict)
+export MATTERGEN_REQUIRE_LFS_MODELS=1
 
 # legacy opt-out switch (also disables pull)
 export MATTERGEN_SKIP_LFS_DOWNLOAD=1
