@@ -38,7 +38,7 @@ def generate_materials(
     properties_to_condition_on: dict[str, Any] | None = None,
     record_trajectories: bool = False,
     diffusion_guidance_factor: float = 0.0,
-    use_local_checkpoints: bool = True,
+    use_local_checkpoints: bool = False,
 ) -> list[Any]:
     """Generate crystal structures from a pretrained MatterGen checkpoint.
 
@@ -129,5 +129,5 @@ def generation_defaults() -> dict[str, Any]:
         "num_batches": 1,
         "record_trajectories": False,
         "diffusion_guidance_factor": 0.0,
-        "use_local_checkpoints": True,
+        "use_local_checkpoints": False,
     }
